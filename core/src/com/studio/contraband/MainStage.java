@@ -2,33 +2,31 @@ package com.studio.contraband;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import javafx.stage.Stage;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class MainStage extends Stage
 {
 
     SpriteBatch batch;
-    Texture img;
+    Background background;
 
 
     public MainStage()
     {
         batch = new SpriteBatch();
-        img = new Texture("ankheg.jpg");
-
-        batch.begin();
-        batch.draw(img, 0, 0);
-        batch.end();
-        batch.dispose();
-        img.dispose();
+        background = new Background();
     }
-
-
     public void draw()
     {
-
-
+        batch.begin();
+        //background.draw(batch);
+        batch.end();
     }
 
+    public void dispose()
+    {
+        batch.end();
+        batch.dispose();
+    }
 
 }
