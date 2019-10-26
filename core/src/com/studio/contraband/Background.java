@@ -16,7 +16,8 @@ public class Background
 
     public void draw(SpriteBatch batch)
     {
-        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //batch.draw(backgroundTexture, 0, 0, 200, 200);
+        //batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
 }
