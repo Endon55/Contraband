@@ -1,9 +1,19 @@
-package com.studio.contraband.Screens;
+package com.studio.contraband;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 
-public class GameScreen implements Screen
+public class ScreenManager implements Screen
 {
+    Game game;
+    ScreenManager(Game mainGame)
+    {
+        game = mainGame;
+
+    }
+
+
+
     @Override
     public void show()
     {

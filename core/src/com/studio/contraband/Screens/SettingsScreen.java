@@ -1,5 +1,5 @@
 package com.studio.contraband.Screens;
 
-public class SplashScreen
+public class SettingsScreen
 {
 }
