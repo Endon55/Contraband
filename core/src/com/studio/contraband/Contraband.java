@@ -18,8 +18,8 @@ public class Contraband extends Game
 	public void create () {
 
 		mainMenuScreen = new MainMenuScreen(this);
-		gameScreen = new GameScreen();
-		settingsScreen = new SettingsScreen();
+		gameScreen = new GameScreen(this);
+		settingsScreen = new SettingsScreen(this);
 		pauseScreen = new PauseScreen();
 		splashScreen = new SplashScreen();
 
