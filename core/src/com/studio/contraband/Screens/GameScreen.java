@@ -7,7 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.studio.contraband.Contraband;
+import com.studio.contraband.GameObjects;
+import com.studio.contraband.Player;
 import com.studio.contraband.ScreenManager;
+import com.studio.contraband.Utils.Constants;
+import com.studio.contraband.Utils.HelperFunctions;
+import com.studio.contraband.Utils.PreferencesAccess;
 
 
 /*
@@ -22,8 +27,11 @@ import com.studio.contraband.ScreenManager;
 public class GameScreen extends ScreenManager
 {
     //List items;
-    Label testLabel;
     Button playButton;
+    Player player;
+    PreferencesAccess preferences;
+
+
     public GameScreen(Contraband game)
     {
         super(game);
@@ -32,25 +40,18 @@ public class GameScreen extends ScreenManager
     @Override
     public void show()
     {
+        preferences = new PreferencesAccess();
         Gdx.input.setInputProcessor(stage);
-        playButton = createNewGameButton(skin);
-        testLabel = new Label("Cocaine", skin);
-        //Array<String> listItems = new Array<String> (new String[] {"Cocaine", "Heroin", "C4"});
-        //items = new List(skin);
-        //items.setItems(listItems);
 
-        testLabel.addListener(new ClickListener(Input.Buttons.LEFT)
+        if(preferences.isGameInProgress())
         {
-            public void clicked(InputEvent event, float x, float y)
-            {
-                Gdx.app.exit();
-            }
-        });
+            player = new Player(100000f, 100, 0, Constants.ITEMS_LIST, HelperFunctions.getEmptyIntArray(), HelperFunctions.getEmptyFloatArray());
+        }
+        else player = new Player(100000f, 100, 0, Constants.ITEMS_LIST, HelperFunctions.getEmptyIntArray(), HelperFunctions.getEmptyFloatArray());
 
+        playButton = createNewGameButton(skin);
 
-        //table.add(items);
-        //table.row();
-        table.add(testLabel);
+        //table.add(player.cocaine.getLabel());
         table.add(playButton);
         //Gdx.app.exit();
 

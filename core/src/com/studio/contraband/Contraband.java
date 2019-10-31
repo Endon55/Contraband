@@ -12,6 +12,7 @@ public class Contraband extends Game
 	private SettingsScreen settingsScreen;
 	private PauseScreen pauseScreen;
 	private SplashScreen splashScreen;
+	private TestbenchScreen testbenchScreen;
 
 
 	@Override
@@ -22,8 +23,11 @@ public class Contraband extends Game
 		settingsScreen = new SettingsScreen(this);
 		pauseScreen = new PauseScreen();
 		splashScreen = new SplashScreen();
+		testbenchScreen = new TestbenchScreen(this);
 
-		setScreen(mainMenuScreen);
+
+
+		setScreen(testbenchScreen);
 	}
 
 	public void render()

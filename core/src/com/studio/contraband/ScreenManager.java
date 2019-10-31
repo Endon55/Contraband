@@ -1,12 +1,15 @@
 package com.studio.contraband;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.studio.contraband.Utils.Constants;
+
+import java.util.Arrays;
+
 
 public class ScreenManager implements Screen
 {
@@ -38,7 +41,7 @@ public class ScreenManager implements Screen
     @Override
     public void render(float delta)
     {
-        Gdx.gl.glClearColor(0,141,141,1);
+        Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1/30f));
@@ -75,4 +78,8 @@ public class ScreenManager implements Screen
     {
         stage.dispose();
     }
+
+
+
+
 }
