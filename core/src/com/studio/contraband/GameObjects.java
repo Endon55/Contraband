@@ -9,26 +9,26 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class GameObjects
 {
-    String itemName;
-    float priceBoughtAt;
-    float currentBuyablePrice;
-    int itemQuantitiy;
-    float basePrice;
+    public String itemName;
+    public float priceBoughtAt;
+    public float currentBuyablePrice;
+    public int itemQuantitiy;
+    public float basePrice;
 
-    Label itemLabel;
+    //Label itemLabel;
 
-    Skin skin;
+    //Skin skin;
 
 
 
-    public GameObjects(String itemName, float basePrice, Skin skin)
+    public GameObjects()
     {
-        this.itemName = itemName;
-        this.basePrice = basePrice;
-        this.skin = skin;
-        itemLabel = createLabel();
+        //this.itemName = itemName;
+        //this.basePrice = basePrice;
+        //this.skin = skin;
+        //itemLabel = createLabel();
     }
-
+/*
     private Label createLabel()
     {
         Label label = new Label(itemName, skin);
@@ -52,5 +52,5 @@ public class GameObjects
     {
 
     }
-
+*/
 }

@@ -7,6 +7,7 @@ public class Contraband extends Game
 {
 
 
+
 	private MainMenuScreen mainMenuScreen;
 	private GameScreen gameScreen;
 	private SettingsScreen settingsScreen;
@@ -18,6 +19,7 @@ public class Contraband extends Game
 	@Override
 	public void create () {
 
+
 		mainMenuScreen = new MainMenuScreen(this);
 		gameScreen = new GameScreen(this);
 		settingsScreen = new SettingsScreen(this);
@@ -25,9 +27,10 @@ public class Contraband extends Game
 		splashScreen = new SplashScreen();
 		testbenchScreen = new TestbenchScreen(this);
 
+		debug(true);
 
 
-		setScreen(testbenchScreen);
+		//setScreen(testbenchScreen);
 	}
 
 	public void render()
@@ -55,4 +58,14 @@ public class Contraband extends Game
 	{
 		return splashScreen;
 	}
+
+	public void debug(boolean debug)
+	{
+		if(debug)
+		{
+			setScreen(testbenchScreen);
+		}
+		else setScreen(gameScreen);
+	}
+
 }

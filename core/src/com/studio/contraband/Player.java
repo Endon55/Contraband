@@ -1,5 +1,6 @@
 package com.studio.contraband;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.studio.contraband.Utils.ContrabandItems;
 
@@ -29,6 +30,12 @@ public class Player
         this.NumberOfItemsOwned = NumberOfItemsOwned;
         this.ItemsList = ItemsList;
         this.PurchasePrice = PurchasePrice;
+    }
+
+    void labelGenerator()
+    {
+
+        //return new Label(skin);
     }
 
 

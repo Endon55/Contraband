@@ -1,9 +1,11 @@
 package com.studio.contraband.Screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Json;
 import com.studio.contraband.Contraband;
+import com.studio.contraband.GameObjects;
 import com.studio.contraband.Player;
 import com.studio.contraband.ScreenManager;
 
@@ -20,31 +22,36 @@ public class TestbenchScreen extends ScreenManager
     @Override
     public void show()
     {
-        int[] ints = {1 , 2, 3, 4};
-        System.out.println(ints);
         pref = Gdx.app.getPreferences("Preferences");
-
         Json json = new Json();
+        GameObjects go = new GameObjects();
+        go.itemName = "cocaine";
+        go.basePrice = 100f;
+        go.currentBuyablePrice = 100f;
+        go.itemQuantitiy = 10;
+        go.priceBoughtAt = 50f;
+        json.addClassTag("GameObjects", GameObjects.class);
+        String objectString = json.toJson(go, GameObjects.class);
+        //System.out.println(json.toJson(go));
+        System.out.println(json.prettyPrint(objectString));
 
-        System.out.println((pref.getString("preferences")));
 
-        //int[][] builtArray = json.fromJson(int[][].class, pref.getString("preferences"));
+
+        GameObjects go2 = json.fromJson(GameObjects.class, objectString);
+        //System.out.println(gottenString);
+        //GameObjects go = json.fromJson(GameObjects.class, gottenString);
+        System.out.println(go.priceBoughtAt);
+
+
+
+
+
+        //pref.putString("preferences", objectString);
+        //pref.flush();
 
         String theArrayString = pref.getString("preferences");
 
-        System.out.println(theArrayString);
-        int[] ints2 = json.fromJson(int[].class, theArrayString);
-        System.out.println(ints2[2]);
-        //System.out.println(ints2);
 
-
-        //int[] ints = {1 , 2, 3, 4};          //, {1 , 2, 3, 4}, {1 , 2, 3, 4}, {1 , 2, 3, 4}, {1 , 2, 3, 4}};
-        //String str = json.toJson(ints);
-        //pref.putString("preferences", str);
-       // pref.flush();
-
-
-        //Player player1 = new Player(100f, 00, 10);
 
 
 
