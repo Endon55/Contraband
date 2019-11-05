@@ -32,6 +32,8 @@ public class Player
         this.PurchasePrice = PurchasePrice;
     }
 
+
+
     void labelGenerator()
     {
 

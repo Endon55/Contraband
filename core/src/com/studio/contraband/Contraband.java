@@ -27,7 +27,7 @@ public class Contraband extends Game
 		splashScreen = new SplashScreen();
 		testbenchScreen = new TestbenchScreen(this);
 
-		debug(true);
+		debug(false);
 
 
 		//setScreen(testbenchScreen);
@@ -65,7 +65,7 @@ public class Contraband extends Game
 		{
 			setScreen(testbenchScreen);
 		}
-		else setScreen(gameScreen);
+		else setScreen(mainMenuScreen);
 	}
 
 }

@@ -6,9 +6,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.studio.contraband.Utils.Constants;
-
-import java.util.Arrays;
 
 
 public class ScreenManager implements Screen
@@ -27,7 +24,10 @@ public class ScreenManager implements Screen
         stage = new Stage();
         table = new Table();
         table.setFillParent(true);
+
+        //TODO DEBUG
         table.setDebug(true);
+
         stage.addActor(table);
         skin = new Skin(Gdx.files.internal("GlassySkinUI/glassy-ui.json"));
     }

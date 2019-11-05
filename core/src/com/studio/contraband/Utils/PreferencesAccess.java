@@ -34,7 +34,8 @@ public class PreferencesAccess
 
     public boolean isGameInProgress()
     {
-        return gameData.getBoolean("GameInProgress");
+        //return gameData.getBoolean("GameInProgress");
+        return false;
     }
 
     private void openPreferencesFile(String fileName)
