@@ -1,33 +1,10 @@
 package com.studio.contraband.Utils;
 
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.Locale;
 
 public class HelperFunctions
 {
-
-
-    public static int[] getEmptyIntArray()
-    {
-        int length = Constants.ITEMS_LIST.length;
-        int[] array = new int[length];
-
-        Arrays.fill(array, 0);
-
-        return array;
-    }
-
-    public static float[] getEmptyFloatArray()
-    {
-        int length = Constants.ITEMS_LIST.length;
-        float[] array = new float[length];
-
-        Arrays.fill(array, 0);
-
-        return array;
-    }
-
 
     public static String getPrettyIntString(int number)
     {
@@ -37,4 +14,11 @@ public class HelperFunctions
         return prettyString;
     }
 
+    public static float resizeText(float newWidth, float defaultSize, float defaultWidth)
+    {
+        //Takes the new Width and scales the new font using the default size of screen width and fault
+        float a = newWidth * defaultSize;
+        float b = a / defaultWidth;
+        return b;
+    }
 }

@@ -4,14 +4,13 @@ public class Constants
 {
     public static final int TILE_SIZE = 20;
 
-    public static final String[] ITEMS_LIST = {
-            "Assault-Rifle", "C4", "Claymore", "Anti-Air", "Handgun", "F18", "M1-Abrams",
-            "Apache-Helicopter",
-            "Cocaine", "Heroin", "Weed", "Ecstasy"
-
-    };
-
-
+    public static final float QUANTITY_SIZE = .1F;
+    public static final float QUANTITY_LEFT_PAD_SIZE = .025F;
+    public static final float NAME_SIZE = .35F;
+    public static final float NAME_LEFT_SIZE_PAD = .025F;
+    public static final float PRICE_SIZE = .35F;
+    public static final float PRICE_LEFT_SIZE_PAD = .1F;
+    public static final float PRICE_RIGHT_SIZE_PAD = .025F;
 
 
 }
