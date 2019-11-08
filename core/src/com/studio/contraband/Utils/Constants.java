@@ -12,5 +12,10 @@ public class Constants
     public static final float PRICE_LEFT_SIZE_PAD = .1F;
     public static final float PRICE_RIGHT_SIZE_PAD = .025F;
 
+    public static final float GAME_TABLE_SIZE_TOP_Y = .8F;
+    public static final float GAME_TABLE_SIZE_BOTTOM_Y = .2F;
+
+    public static final int VERTICAL_PADDING = 5;
+
 
 }

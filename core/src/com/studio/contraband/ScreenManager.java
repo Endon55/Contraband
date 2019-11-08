@@ -26,9 +26,10 @@ public class ScreenManager implements Screen
         table.setFillParent(true);
 
         //TODO DEBUG
-        table.setDebug(true);
+        table.setDebug(false);
 
         stage.addActor(table);
+        //skin = new Skin(Gdx.files.internal("neon/neon-ui.json"));
         skin = new Skin(Gdx.files.internal("GlassySkinUI/glassy-ui.json"));
     }
 
