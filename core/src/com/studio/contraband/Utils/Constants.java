@@ -17,5 +17,8 @@ public class Constants
 
     public static final int VERTICAL_PADDING = 5;
 
+    public static final float MARKETPLACE_WINDOW_HEIGHT = 250F;
+    public static final float MARKETPLACE_WINDOW_WIDTH = 20F;
+
 
 }

@@ -1,27 +1,20 @@
 package com.studio.contraband.Screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.studio.contraband.Contraband;
-import com.studio.contraband.GameItems;
-import com.studio.contraband.Player;
-import com.studio.contraband.ScreenManager;
+import com.studio.contraband.*;
 import com.studio.contraband.Utils.Constants;
 import com.studio.contraband.Utils.HelperFunctions;
 import com.studio.contraband.Utils.PreferencesAccess;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +47,6 @@ public class GameScreen extends ScreenManager
 
     //List items;
     Button playButton;
-    Player player;
     PreferencesAccess preferences;
     ArrayList<GameItems> gameObjects;
 
@@ -66,10 +58,12 @@ public class GameScreen extends ScreenManager
 
     Table clickableTable;
     Table textTable;
+    Table windowTable;
     VerticalGroup itemGroup;
     VerticalGroup quantityGroup;
     VerticalGroup priceGroup;
     VerticalGroup clickableGroup;
+    MarketplaceWindow marketWindow;
 
     public GameScreen(Contraband game)
     {
@@ -80,27 +74,8 @@ public class GameScreen extends ScreenManager
     public void show()
     {
         Gdx.input.setInputProcessor(stage);
-        defaultSkin = new Skin(Gdx.files.internal("DefaultSkin/uiskin.json"));
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("SulphurPoint-Bold.otf"));
-        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = (int)HelperFunctions.resizeText(screenWidth, 50f, 1080);
-        font = generator.generateFont(parameter);
-        generator.dispose();
-        fontStyle = new Label.LabelStyle(font, Color.BLACK);
-
-        preferences = new PreferencesAccess();
-
-        textTable = new Table();
-        clickableTable = new Table();
-        clickableTable.setDebug(true);
-        itemGroup = new VerticalGroup();
-        quantityGroup = new VerticalGroup();
-        priceGroup = new VerticalGroup();
-        clickableGroup = new VerticalGroup();
-
+        init();
         table.align(Align.left);
-        //table.setBounds(0, , screenWidth, );
-        //table.setBounds(0, screenHeight * Constants.GAME_TABLE_SIZE_BOTTOM_Y, screenWidth, screenHeight * Constants.GAME_TABLE_SIZE_TOP_Y);
         if(preferences.isGameInProgress())
         {
             gameObjects = getFreshItemList();
@@ -113,6 +88,8 @@ public class GameScreen extends ScreenManager
 
 
     }
+
+
 
 
     private TextButton createNewGameButton(Skin skin)
@@ -150,46 +127,15 @@ public class GameScreen extends ScreenManager
             {
                 //TODO Listener Functionality
                 System.out.println("Clicked: " + item.getItemName());
-                marketplaceDialog(item);
+                //marketplaceDialog(item);
+                marketWindow.show(item);
             }
 
         };
         return listener;
     }
 
-    private Dialog marketplaceDialog(final GameItems item)
-    {
 
-        final Dialog dialog = new Dialog("", defaultSkin, "dialog");
-
-        TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ButtonUp.png"))));
-        Window.WindowStyle windowStyle = new Window.WindowStyle(font, Color.RED, drawable);
-        final Dialog dialog2 = new Dialog("Title", windowStyle);
-
-
-        TextButton button = HelperFunctions.createCustomButton("Button", font, "ButtonUp.png", "ButtonDown.png");
-        button.addListener(new ClickListener(Input.Buttons.LEFT)
-        {
-
-            public void clicked(InputEvent event, float x, float y)
-            {
-                //TODO Listener Functionality
-                System.out.println("ButtonClicked");
-                dialog.remove();
-            }
-
-        });
-        dialog2.scaleBy(2f);
-        //dialog2.text(item.getItemName());
-        dialog2.add(button);
-        //dialog2.button("Yes", true);
-
-        //dialog2.text(item.getItemName());
-        //dialog2.button("No", true);
-        dialog2.show(stage);
-
-        return dialog2;
-    }
 
 
 
@@ -283,8 +229,32 @@ public class GameScreen extends ScreenManager
         }
         //Adds the above group to its own table, to be overlaid onto the textTable
         clickableTable.add(clickableGroup).maxHeight(100f);
-        table.add(new Stack(textTable, clickableGroup));
+        table.add(new Stack(textTable, clickableGroup, windowTable));
     }
 
 
+
+    private void init()
+    {
+        defaultSkin = new Skin(Gdx.files.internal("DefaultSkin/uiskin.json"));
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("SulphurPoint-Bold.otf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = (int)HelperFunctions.resizeText(screenWidth, 50f, 1080);
+        font = generator.generateFont(parameter);
+        generator.dispose();
+        fontStyle = new Label.LabelStyle(font, Color.BLACK);
+        preferences = new PreferencesAccess();
+
+        textTable = new Table();
+        clickableTable = new Table();
+        windowTable = new Table();
+        clickableTable.setDebug(true);
+        itemGroup = new VerticalGroup();
+        quantityGroup = new VerticalGroup();
+        priceGroup = new VerticalGroup();
+        clickableGroup = new VerticalGroup();
+        marketWindow = new MarketplaceWindow("Title", skin, font, windowTable);
+        marketWindow.setup();
+
+    }
 }
