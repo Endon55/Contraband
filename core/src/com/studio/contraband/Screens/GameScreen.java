@@ -4,12 +4,16 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.studio.contraband.*;
 import com.studio.contraband.Utils.Constants;
@@ -22,19 +26,12 @@ import java.util.Collections;
 import java.util.Comparator;
 
 
-/*
+/**
     UI Elements
     Cash, Debt, Location
 
-    Items for Sale
-    Prices
-
-    Create 2 tables, one that holds all the text, 3 vGroups
-    the second holds 1 vgroup that spans the whole screen width with the number of rows the first has
-    the second table gets autosized height wise to the first
-
-
-
+ Buy greys out if not enough money
+ Sell greys out if none to sell
 
  */
 
@@ -46,9 +43,10 @@ public class GameScreen extends ScreenManager
 
 
     //List items;
+
     Button playButton;
     PreferencesAccess preferences;
-    ArrayList<GameItems> gameObjects;
+    Player player;
 
     FreeTypeFontGenerator generator;
     FreeTypeFontGenerator.FreeTypeFontParameter parameter;
@@ -58,12 +56,11 @@ public class GameScreen extends ScreenManager
 
     Table clickableTable;
     Table textTable;
-    Table windowTable;
     VerticalGroup itemGroup;
     VerticalGroup quantityGroup;
     VerticalGroup priceGroup;
     VerticalGroup clickableGroup;
-    MarketplaceWindow marketWindow;
+    MarketplaceDialog marketDialog;
 
     public GameScreen(Contraband game)
     {
@@ -74,19 +71,14 @@ public class GameScreen extends ScreenManager
     public void show()
     {
         Gdx.input.setInputProcessor(stage);
+
         init();
+        table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("BasicBackground.png")))));
         table.align(Align.left);
-        if(preferences.isGameInProgress())
-        {
-            gameObjects = getFreshItemList();
-        }
-        else gameObjects = getFreshItemList();
 
         playButton = createNewGameButton(skin);
+
         assembleGroups();
-
-
-
     }
 
 
@@ -108,15 +100,6 @@ public class GameScreen extends ScreenManager
 
 
 
-    private GameItems buildItemObject(String name, int numberPurchased, int purchasePrice, int basePrice)
-    {
-        GameItems item = new GameItems();
-        item.setItemName(name);
-        item.setItemQuantity(numberPurchased);
-        item.setPurchasePrice(purchasePrice);
-        item.setBasePrice(basePrice);
-        return item;
-    }
 
     private ClickListener itemClickImplimentation(final GameItems item)
     {
@@ -128,7 +111,8 @@ public class GameScreen extends ScreenManager
                 //TODO Listener Functionality
                 System.out.println("Clicked: " + item.getItemName());
                 //marketplaceDialog(item);
-                marketWindow.show(item);
+                //marketWindow.show(item);
+                marketDialog.show(stage);
             }
 
         };
@@ -136,48 +120,6 @@ public class GameScreen extends ScreenManager
     }
 
 
-
-
-
-    private ArrayList<GameItems> getFreshItemList()
-    {
-        //Assembles the Array that hold all the different Buy/Sell Items
-        ArrayList<GameItems> gameItems = new ArrayList<GameItems>();
-        //Drugs
-        gameItems.add(buildItemObject("Cocaine", 0, 0, 850));
-        gameItems.add(buildItemObject("Heroin", 255, 0, 350));
-        gameItems.add(buildItemObject("Weed", 0, 0, 75));
-        gameItems.add(buildItemObject("Speed", 0, 0, 125));
-        gameItems.add(buildItemObject("Mushrooms", 0, 0, 200));
-        gameItems.add(buildItemObject("Peyote", 0, 0, 150));
-        gameItems.add(buildItemObject("Meth", 0, 0, 550));
-        gameItems.add(buildItemObject("MDMA", 0, 0, 300));
-        gameItems.add(buildItemObject("Moonshine", 0, 0, 95));
-        //Weapons
-        gameItems.add(buildItemObject("Assault Rifle", 0, 0, 1500));
-        gameItems.add(buildItemObject("Plastic Explosive", 0, 0, 450));
-        gameItems.add(buildItemObject("Handgun", 0, 0, 750));
-        gameItems.add(buildItemObject("Anti-Air", 0, 0, 2000000));//2 Million
-        gameItems.add(buildItemObject("F18", 0, 0, 55000000));//55 Million
-        gameItems.add(buildItemObject("M1-Abrams", 0, 0, 6200000));//6.2 Million
-        gameItems.add(buildItemObject("Apache Helicopter", 0, 0, 61000000)); //61 Million
-
-
-        //Alphabetizes the list
-        Collections.sort(gameItems, new Comparator<GameItems>()
-        {
-            @Override
-            public int compare(GameItems item1, GameItems item2)
-            {
-                return item1.getItemName().compareTo(item2.getItemName());
-            }
-        });
-
-
-
-
-        return gameItems;
-    }
 
 
     private void assembleGroups()
@@ -189,7 +131,7 @@ public class GameScreen extends ScreenManager
         on different resolutions. Because the actor seemed to actually be sized to fit i couldnt just let the formatting stretch it itself.
         Eventually I found getPrefHeight which returns a usable number which you divide by the number of items and that's the actors height.  */
 
-        int itemListLength = gameObjects.size();
+        int itemListLength = player.getNumberOfItems();
 
         //Formatting
         itemGroup.columnAlign(Align.left);
@@ -198,9 +140,9 @@ public class GameScreen extends ScreenManager
         //Creates the 3 labels for each item/row and adds each one to a separate group.
         for(int i = 0; i < itemListLength; i++)
         {
-            Label itemLabel     = new Label(gameObjects.get(i).getItemName(), fontStyle);
-            Label priceLabel    = new Label("$" + HelperFunctions.getPrettyIntString(gameObjects.get(i).getBasePrice()), fontStyle);
-            Label quantityLabel = new Label(Integer.toString(gameObjects.get(i).getItemQuantity()), fontStyle);
+            Label itemLabel     = new Label(player.getGameItems().get(i).getItemName(), fontStyle);
+            Label priceLabel    = new Label("$" + HelperFunctions.getPrettyIntString(player.getGameItems().get(i).getBasePrice()), fontStyle);
+            Label quantityLabel = new Label(Integer.toString(player.getGameItems().get(i).getItemQuantity()), fontStyle);
             itemGroup.addActor(itemLabel);
             priceGroup.addActor(priceLabel);
             quantityGroup.addActor(quantityLabel);
@@ -221,7 +163,7 @@ public class GameScreen extends ScreenManager
         for(int i = 0; i < itemListLength; i++)
         {
             Actor clickActor = new Actor();
-            clickActor.addListener(itemClickImplimentation(gameObjects.get(i)));
+            clickActor.addListener(itemClickImplimentation(player.getGameItems().get(i)));
 
             clickActor.setSize(Gdx.graphics.getWidth(), height / itemListLength);
             clickActor.setColor(Color.TAN);
@@ -229,13 +171,15 @@ public class GameScreen extends ScreenManager
         }
         //Adds the above group to its own table, to be overlaid onto the textTable
         clickableTable.add(clickableGroup).maxHeight(100f);
-        table.add(new Stack(textTable, clickableGroup, windowTable));
+        table.add(new Stack(textTable, clickableGroup));
     }
 
 
 
     private void init()
     {
+        player = new Player();
+        player.init(Constants.STARTING_MONEY, Constants.STARTING_SPACE);
         defaultSkin = new Skin(Gdx.files.internal("DefaultSkin/uiskin.json"));
         generator = new FreeTypeFontGenerator(Gdx.files.internal("SulphurPoint-Bold.otf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -247,14 +191,13 @@ public class GameScreen extends ScreenManager
 
         textTable = new Table();
         clickableTable = new Table();
-        windowTable = new Table();
         clickableTable.setDebug(true);
         itemGroup = new VerticalGroup();
         quantityGroup = new VerticalGroup();
         priceGroup = new VerticalGroup();
         clickableGroup = new VerticalGroup();
-        marketWindow = new MarketplaceWindow("Title", skin, font, windowTable);
-        marketWindow.setup();
+
+        marketDialog = new MarketplaceDialog("", defaultSkin, font);
 
     }
 }

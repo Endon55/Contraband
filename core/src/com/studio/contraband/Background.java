@@ -2,6 +2,7 @@ package com.studio.contraband;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Background
@@ -11,13 +12,12 @@ public class Background
 
     public Background()
     {
-        backgroundTexture = new Texture("ankheg.jpg");
+        backgroundTexture = new Texture("basicBackground.png");
     }
 
-    public void draw(SpriteBatch batch)
+    public void draw(Batch batch)
     {
-        //batch.draw(backgroundTexture, 0, 0, 200, 200);
-        //batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
     }
 
 }

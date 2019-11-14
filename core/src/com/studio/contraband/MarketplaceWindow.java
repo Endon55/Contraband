@@ -6,6 +6,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -23,15 +25,16 @@ public class MarketplaceWindow
     TextButton buyButton;
     TextButton sellButton;
     String title;
+    Stage stage;
 
 
-    public MarketplaceWindow(String title, Skin skin, BitmapFont font, Table windowTable)
+    public MarketplaceWindow(String title, Skin skin, BitmapFont font, Table windowTable, Stage stage )
     {
+        this.stage = stage;
         this.title = title;
         this.skin = skin;
         this.font = font;
         this.windowTable = windowTable;
-
     }
 
     public void setup()
@@ -41,27 +44,9 @@ public class MarketplaceWindow
         buyButton = HelperFunctions.createCustomButton("Buy", font, "ButtonUp.png", "ButtonDown.png");
         sellButton = HelperFunctions.createCustomButton("Sell", font, "ButtonUp.png", "ButtonDown.png");
 
-        buyButton.addListener( new ClickListener(Input.Buttons.LEFT)
-        {
+        buyButton.addListener(buttonListener());
+        sellButton.addListener(buttonListener());
 
-            public void clicked(InputEvent event, float x, float y)
-            {
-                //TODO Listener Functionality
-                hide(windowTable, window);
-            }
-
-        });
-
-        sellButton.addListener( new ClickListener(Input.Buttons.LEFT)
-        {
-
-            public void clicked(InputEvent event, float x, float y)
-            {
-                //TODO Listener Functionality
-                hide(windowTable, window);
-            }
-
-        });
 
         window.add(buyButton);
         window.add(sellButton);
@@ -76,15 +61,38 @@ public class MarketplaceWindow
     {
 
         windowTable.add(window).align(Align.center);
+        InputListener ignoreTouchDown = new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                event.cancel();
+                return false;
+            }
+        };
+        //stage.setKeyboardFocus(window);
+        //stage.setScrollFocus(window);
+        //System.out.println(stage.getKeyboardFocus());
+        //System.out.println(stage.getScrollFocus());
 
     }
 
     private static void hide(Table windowTable, Window window)
     {
         windowTable.removeActor(window);
+        window.defaults();
     }
 
+    private ClickListener buttonListener()
+    {
+        return new ClickListener(Input.Buttons.LEFT)
+        {
 
+            public void clicked(InputEvent event, float x, float y)
+            {
+                //TODO Listener Functionality
+                hide(windowTable, window);
+            }
+
+        };
+    }
 
 
 
