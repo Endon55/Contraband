@@ -44,7 +44,6 @@ public class GameScreen extends ScreenManager
 
     //List items;
 
-    Button playButton;
     PreferencesAccess preferences;
     Player player;
 
@@ -75,33 +74,10 @@ public class GameScreen extends ScreenManager
         init();
         table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("BasicBackground.png")))));
         table.align(Align.left);
-
-        playButton = createNewGameButton(skin);
-
         assembleGroups();
     }
 
-
-
-
-    private TextButton createNewGameButton(Skin skin)
-    {
-        TextButton gameButton = new TextButton("New Game", skin);
-
-        gameButton.addListener(new ClickListener(Input.Buttons.LEFT)
-        {
-            public void clicked(InputEvent event, float x, float y)
-            {
-                Gdx.app.exit();
-            }
-        });
-        return gameButton;
-    }
-
-
-
-
-    private ClickListener itemClickImplimentation(final GameItems item)
+    private ClickListener itemClickImplimentation(final int itemIndex)
     {
         ClickListener listener = new ClickListener(Input.Buttons.LEFT)
         {
@@ -109,17 +85,14 @@ public class GameScreen extends ScreenManager
             public void clicked(InputEvent event, float x, float y)
             {
                 //TODO Listener Functionality
-                System.out.println("Clicked: " + item.getItemName());
-                //marketplaceDialog(item);
-                //marketWindow.show(item);
+                System.out.println("Clicked: " + player.getGameItems().get(itemIndex).getItemName());
+                marketDialog = new MarketplaceDialog("", defaultSkin, font, player, itemIndex);
                 marketDialog.show(stage);
             }
 
         };
         return listener;
     }
-
-
 
 
     private void assembleGroups()
@@ -142,7 +115,7 @@ public class GameScreen extends ScreenManager
         {
             Label itemLabel     = new Label(player.getGameItems().get(i).getItemName(), fontStyle);
             Label priceLabel    = new Label("$" + HelperFunctions.getPrettyIntString(player.getGameItems().get(i).getBasePrice()), fontStyle);
-            Label quantityLabel = new Label(Integer.toString(player.getGameItems().get(i).getItemQuantity()), fontStyle);
+            Label quantityLabel = new Label(Integer.toString(player.getGameItems().get(i).getNumberOwned()), fontStyle);
             itemGroup.addActor(itemLabel);
             priceGroup.addActor(priceLabel);
             quantityGroup.addActor(quantityLabel);
@@ -163,7 +136,7 @@ public class GameScreen extends ScreenManager
         for(int i = 0; i < itemListLength; i++)
         {
             Actor clickActor = new Actor();
-            clickActor.addListener(itemClickImplimentation(player.getGameItems().get(i)));
+            clickActor.addListener(itemClickImplimentation(i));
 
             clickActor.setSize(Gdx.graphics.getWidth(), height / itemListLength);
             clickActor.setColor(Color.TAN);
@@ -174,12 +147,12 @@ public class GameScreen extends ScreenManager
         table.add(new Stack(textTable, clickableGroup));
     }
 
-
-
     private void init()
     {
         player = new Player();
         player.init(Constants.STARTING_MONEY, Constants.STARTING_SPACE);
+        preferences = new PreferencesAccess();
+
         defaultSkin = new Skin(Gdx.files.internal("DefaultSkin/uiskin.json"));
         generator = new FreeTypeFontGenerator(Gdx.files.internal("SulphurPoint-Bold.otf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -187,7 +160,6 @@ public class GameScreen extends ScreenManager
         font = generator.generateFont(parameter);
         generator.dispose();
         fontStyle = new Label.LabelStyle(font, Color.BLACK);
-        preferences = new PreferencesAccess();
 
         textTable = new Table();
         clickableTable = new Table();
@@ -196,8 +168,5 @@ public class GameScreen extends ScreenManager
         quantityGroup = new VerticalGroup();
         priceGroup = new VerticalGroup();
         clickableGroup = new VerticalGroup();
-
-        marketDialog = new MarketplaceDialog("", defaultSkin, font);
-
     }
 }

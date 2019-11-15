@@ -1,9 +1,5 @@
 package com.studio.contraband;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.studio.contraband.Utils.ContrabandItems;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +24,17 @@ public class Player
 
     }
 
+    private void calculateUsedSpace()
+    {
+        int temp = 0;
+        for (GameItems item: gameItems)
+        {
+            temp += item.getNumberOwned();
+        }
+        usedSpace = temp;
+    }
+    
+    
     public void init(float startingMoney, int startingMaxSpace)
     {
         money = startingMoney;
@@ -36,12 +43,26 @@ public class Player
         getFreshItemList();
     }
 
+    public void buy(int index, int quantity, float price)
+    {
+        int currentQuantity = gameItems.get(index).getNumberOwned();
+        setMoney(getMoney() - quantity * price);
+        gameItems.get(index).setNumberOwned(currentQuantity + quantity);
+    }
+
+    public void sell(int index, int quantity, float price)
+    {
+        int currentQuantity = gameItems.get(index).getNumberOwned();
+        setMoney(getMoney() + quantity * price);
+        gameItems.get(index).setNumberOwned(currentQuantity - quantity);
+    }
+
 
     private GameItems buildItemObject(String name, int numberPurchased, int purchasePrice, int basePrice)
     {
         GameItems item = new GameItems();
         item.setItemName(name);
-        item.setItemQuantity(numberPurchased);
+        item.setNumberOwned(numberPurchased);
         item.setPurchasePrice(purchasePrice);
         item.setBasePrice(basePrice);
         return item;
@@ -53,7 +74,7 @@ public class Player
         gameItems = new ArrayList<GameItems>();
         //Drugs
         gameItems.add(buildItemObject("Cocaine", 0, 0, 850));
-        gameItems.add(buildItemObject("Heroin", 255, 0, 350));
+        gameItems.add(buildItemObject("Heroin", 0, 0, 350));
         gameItems.add(buildItemObject("Weed", 0, 0, 75));
         gameItems.add(buildItemObject("Speed", 0, 0, 125));
         gameItems.add(buildItemObject("Mushrooms", 0, 0, 200));
@@ -80,6 +101,7 @@ public class Player
             }
         });
 
+        calculateUsedSpace();
         numberOfItems = gameItems.size();
     }
 

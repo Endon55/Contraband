@@ -1,78 +1,126 @@
 package com.studio.contraband;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.studio.contraband.Utils.Constants;
+import com.studio.contraband.Utils.Enums;
 import com.studio.contraband.Utils.HelperFunctions;
 
 public class MarketplaceDialog extends Dialog
 {
 
-    Window.WindowStyle style;
+    String buyText;
+    String sellText;
 
-    BitmapFont font;
-    TextButton buyButton;
-    TextButton sellButton;
-    Table table;
-    private int buySliderValue;
-    private int sellSliderValue;
-    private Label buySliderLabel;
-    private Label sellSliderLabel;
+    private BitmapFont font;
+    private TextButton buyButton;
+    private TextButton sellButton;
+    private Table table;
+
+    private int sliderValue;
+    private Slider slider;
+    private Label sliderLabel;
+    private TextButton sliderButton;
+    private Player player;
+    private int index;
+    private Enums.DialogStates state;
+
+    private float currentPrice;
 
 
-
-    public MarketplaceDialog(String title, Skin skin, BitmapFont font)
+    public MarketplaceDialog(String title, Skin skin, BitmapFont font, Player player, int index)
     {
         super(title, skin);
+        this.player = player;
         this.font = font;
+        this.index = index;
         setup();
+        currentPrice = 100f;
     }
 
 
-    public void setup()
+    private void secondDialogWindow()
     {
-        buySliderValue = 0;
-        sellSliderValue = 0;
-        table = new Table();
-        buyButton = HelperFunctions.createCustomButton("Buy", font, "ButtonUp3.png", "ButtonDown3.png");
-        sellButton = HelperFunctions.createCustomButton("Sell", font, "ButtonUp3.png", "ButtonDown3.png");
+        int currentSliderValue;
+        int maxBuy = (int)(player.getMoney() / currentPrice);
+        int maxSell = player.getGameItems().get(index).getNumberOwned();
+        sliderLabel = new Label("0", getSkin());
 
-        padTop(0);
-        padBottom(0);
-        //button(buyButton, "buyButton");
-        getButtonTable().row();
-        //button(sellButton, "sellButton");
+        if(state == Enums.DialogStates.buy)
+        {
+            currentSliderValue = maxBuy;
+            sliderLabel = new Label(Integer.toString(currentSliderValue), getSkin());
+            slider = new Slider(0f, maxBuy, 1, false, getSkin());
+            slider.setValue(currentSliderValue);
+            sliderButton = HelperFunctions.createCustomButton(buyText, font, "ButtonUp3.png", "ButtonDown3.png");
 
-        getButtonTable().add(buyButton);
-        getButtonTable().row();
-        getButtonTable().add(sellButton);
+            slider.addListener(new ChangeListener()
+            {
+                public void changed(ChangeEvent event, Actor actor)
+                {
+                    updateLabel((int)slider.getValue());
+                }
+            });
 
-        buyButton.addListener(buttonListener());
-        sellButton.addListener(buttonListener());
+            sliderButton.addListener(new ClickListener(Input.Buttons.LEFT)
+            {
+                public void clicked(InputEvent event, float x, float y)
+                {
+                    player.buy(index, (int)slider.getValue(), currentPrice);
+                    hide();
+                }
+            });
 
-        //getContentTable().add(sellButton).width(Gdx.graphics.getWidth() * .8f);
-        //table.add(buyButton).left();
-        //table.row();
-        //table.add(sellButton).left();
-        //this.getContentTable().add(table).align(Align.left).expand().fill();
+            getContentTable().add(sliderLabel);
+            getContentTable().row();
+            getContentTable().add(slider).width(getWidth() * .8f);
+            getButtonTable().add(sliderButton);
+        }
+        else if(state == Enums.DialogStates.sell)
+        {
+            currentSliderValue = maxSell;
+            sliderLabel = new Label(Integer.toString(currentSliderValue), getSkin());
+            slider = new Slider(0f, maxSell, 1, false, getSkin());
+            slider.setValue(currentSliderValue);
+            sliderButton = HelperFunctions.createCustomButton(sellText, font, "ButtonUp3.png", "ButtonDown3.png");
+
+            slider.addListener(new ChangeListener()
+            {
+                public void changed(ChangeEvent event, Actor actor)
+                {
+                    updateLabel((int)slider.getValue());
+                }
+            });
+
+            sliderButton.addListener(new ClickListener(Input.Buttons.LEFT)
+            {
+                public void clicked(InputEvent event, float x, float y)
+                {
+                    player.buy(index, (int)slider.getValue(), currentPrice);
+                    hide();
+                }
+            });
+
+            getContentTable().add(sliderLabel);
+            getContentTable().row();
+            getContentTable().add(slider).width(getWidth() * .8f);
+            getButtonTable().add(sliderButton);
+        }
+
 
 
     }
-
-    private void buyDialogWindow(float money, float currentPrice)
+/*
+    private void specificsWindow(float money, float currentPrice)
     {
-        buySliderValue = 0;
-        float maxBuy = (int)(money / currentPrice);
-        final int currentSliderValue = 0;
-        final Slider slider = new Slider(0f, maxBuy, 1, false, getSkin());
+        sliderValue = 0;
+
+
+        final Slider
         buySliderLabel = new Label(Integer.toString(currentSliderValue), getSkin());
 
         slider.addListener(new ChangeListener()
@@ -89,41 +137,67 @@ public class MarketplaceDialog extends Dialog
         getContentTable().add(buySliderLabel);
         getContentTable().row();
         getContentTable().add(slider).width(getWidth() * .8f);
-    }
-    private void sliderReturn(int sliderValue, boolean isBuy)
-    {
-        if(isBuy)
-        {
-            buySliderValue = sliderValue;
-            buySliderLabel.setText(buySliderValue);
-        }
-        else sellSliderValue = sliderValue;
-    }
-    private void sellDialogWindow()
-    {
-        sellSliderValue = 0;
-    }
-
-
-
-
-    private ClickListener buttonListener()
-    {
-        return new ClickListener(Input.Buttons.LEFT)
+        getButtonTable().add(buySliderButton);
+        buyButton.addListener(new ClickListener(Input.Buttons.LEFT)
         {
 
             public void clicked(InputEvent event, float x, float y)
             {
-                System.out.println("BuySellClicked");
-                getButtonTable().clear();
-                getContentTable().clear();
-                buyDialogWindow(100, 10);
+                hide();
             }
 
-        };
+        });
+    }
+
+ */
+    private void updateLabel(int sliderValue)
+    {
+        sliderLabel.setText(Integer.toString(sliderValue));
     }
 
 
+    public void setup()
+    {
+        buyText = "Buy";
+        sellText = "Sell";
+        table = new Table();
+        sliderValue = 0;
+
+        buyButton        = HelperFunctions.createCustomButton(buyText, font, "ButtonUp3.png", "ButtonDown3.png");
+        sellButton       = HelperFunctions.createCustomButton(sellText, font, "ButtonUp3.png", "ButtonDown3.png");
+
+        padTop(0);
+        padBottom(0);
+        getButtonTable().row();
+
+        getButtonTable().add(buyButton);
+        getButtonTable().row();
+        getButtonTable().add(sellButton);
+
+        buyButton.addListener(new ClickListener(Input.Buttons.LEFT)
+        {
+            public void clicked(InputEvent event, float x, float y)
+            {
+                System.out.println("BuyClicked");
+                getButtonTable().clear();
+                getContentTable().clear();
+                state = Enums.DialogStates.buy;
+                secondDialogWindow();
+            }
+        });
+        sellButton.addListener(new ClickListener(Input.Buttons.LEFT)
+        {
+
+            public void clicked(InputEvent event, float x, float y)
+            {
+                System.out.println("SellClicked");
+                getButtonTable().clear();
+                getContentTable().clear();
+                state = Enums.DialogStates.sell;
+                secondDialogWindow();
+            }
+        });
+    }
 
 
 
