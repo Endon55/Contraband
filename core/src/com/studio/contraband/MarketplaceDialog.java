@@ -46,7 +46,8 @@ public class MarketplaceDialog extends Dialog
     private void secondDialogWindow()
     {
         int currentSliderValue;
-        int maxBuy = (int)(player.getMoney() / currentPrice);
+        //Takes the lower of the 2, the max number the player can hold or max of what they can buy
+        int maxBuy = Math.min(player.getMaxSpace() - player.getUsedSpace(),(int)(player.getMoney() / currentPrice));
         int maxSell = player.getGameItems().get(index).getNumberOwned();
         sliderLabel = new Label("0", getSkin());
 
@@ -100,7 +101,7 @@ public class MarketplaceDialog extends Dialog
             {
                 public void clicked(InputEvent event, float x, float y)
                 {
-                    player.buy(index, (int)slider.getValue(), currentPrice);
+                    player.sell(index, (int)slider.getValue(), currentPrice);
                     hide();
                 }
             });

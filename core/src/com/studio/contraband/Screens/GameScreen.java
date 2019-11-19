@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.studio.contraband.*;
@@ -20,19 +19,12 @@ import com.studio.contraband.Utils.Constants;
 import com.studio.contraband.Utils.HelperFunctions;
 import com.studio.contraband.Utils.PreferencesAccess;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-
 
 /**
-    UI Elements
-    Cash, Debt, Location
-
+ UI Elements
+ Cash, Debt, Location
  Buy greys out if not enough money
  Sell greys out if none to sell
-
  */
 
 
@@ -61,6 +53,8 @@ public class GameScreen extends ScreenManager
     VerticalGroup clickableGroup;
     MarketplaceDialog marketDialog;
 
+    Boolean debug = false;
+
     public GameScreen(Contraband game)
     {
         super(game);
@@ -81,7 +75,6 @@ public class GameScreen extends ScreenManager
     {
         ClickListener listener = new ClickListener(Input.Buttons.LEFT)
         {
-
             public void clicked(InputEvent event, float x, float y)
             {
                 //TODO Listener Functionality
@@ -89,19 +82,17 @@ public class GameScreen extends ScreenManager
                 marketDialog = new MarketplaceDialog("", defaultSkin, font, player, itemIndex);
                 marketDialog.show(stage);
             }
-
         };
         return listener;
     }
 
-
     private void assembleGroups()
     {
         // Builds the Columns of item labels to be displayed
-        /*  First issue was that if the item text such as "Weed" doesnt take up much width so the actualy clickable label was only
+        /*  First issue was that if the item text such as "Weed" doesn't take up much width so the actually clickable label was only
         about 4 letters wide and the goal was full width. So i had to overlay each row with a custom actor but the biggest issue with
-        that was estimating the height of each item row. Basically i couldnt find a way to calculate or guess the height that would work
-        on different resolutions. Because the actor seemed to actually be sized to fit i couldnt just let the formatting stretch it itself.
+        that was estimating the height of each item row. Basically i couldn't find a way to calculate or guess the height that would work
+        on different resolutions. Because the actor seemed to actually be sized to fit i could'nt just let the formatting stretch it itself.
         Eventually I found getPrefHeight which returns a usable number which you divide by the number of items and that's the actors height.  */
 
         int itemListLength = player.getNumberOfItems();
@@ -113,22 +104,21 @@ public class GameScreen extends ScreenManager
         //Creates the 3 labels for each item/row and adds each one to a separate group.
         for(int i = 0; i < itemListLength; i++)
         {
-            Label itemLabel     = new Label(player.getGameItems().get(i).getItemName(), fontStyle);
-            Label priceLabel    = new Label("$" + HelperFunctions.getPrettyIntString(player.getGameItems().get(i).getBasePrice()), fontStyle);
-            Label quantityLabel = new Label(Integer.toString(player.getGameItems().get(i).getNumberOwned()), fontStyle);
-            itemGroup.addActor(itemLabel);
-            priceGroup.addActor(priceLabel);
-            quantityGroup.addActor(quantityLabel);
+            itemGroup.addActor(player.getGameItems().get(i).getItemNameLabel());
+            priceGroup.addActor(player.getGameItems().get(i).getBasePricelabel());
+            quantityGroup.addActor(player.getGameItems().get(i).getNumberOwnedLabel());
         }
+
         //Padding Between Rows
         quantityGroup.space(Constants.VERTICAL_PADDING);
         itemGroup    .space(Constants.VERTICAL_PADDING);
         priceGroup   .space(Constants.VERTICAL_PADDING);
 
         //Expand and Fill cause the table to expand all the way to the sides of the screen.
-        textTable.add(quantityGroup).expandX().fillX().padLeft(screenWidth * Constants.QUANTITY_LEFT_PAD_SIZE);
+
+        textTable.add(quantityGroup).expandX().fillX().minWidth(stage.getViewport().getWorldWidth() * Constants.QUANTITY_OWNED_WIDTH);//padLeft(stage.getViewport().getWorldWidth() * Constants.QUANTITY_LEFT_PAD_SIZE).
         textTable.add(itemGroup)    .expandX().fillX().padLeft(screenWidth * Constants.NAME_LEFT_SIZE_PAD);
-        textTable.add(priceGroup)   .expandX().fillX().padLeft(screenWidth * Constants.PRICE_LEFT_SIZE_PAD);
+        textTable.add(priceGroup)   .expandX().fillX().padRight(screenWidth * Constants.PRICE_RIGHT_SIZE_PAD);
 
         //Gets the "height" of the above groups
         float height = textTable.getPrefHeight();
@@ -138,28 +128,29 @@ public class GameScreen extends ScreenManager
             Actor clickActor = new Actor();
             clickActor.addListener(itemClickImplimentation(i));
 
-            clickActor.setSize(Gdx.graphics.getWidth(), height / itemListLength);
+            clickActor.setSize(stage.getViewport().getWorldWidth(), height / itemListLength);
             clickActor.setColor(Color.TAN);
             clickableGroup.addActor(clickActor);
         }
         //Adds the above group to its own table, to be overlaid onto the textTable
-        clickableTable.add(clickableGroup).maxHeight(100f);
-        table.add(new Stack(textTable, clickableGroup));
+        clickableTable.add(clickableGroup).setActorWidth(textTable.getPrefWidth());
+        table.add(new Stack(textTable, clickableTable)).fill().expand();
     }
 
     private void init()
     {
-        player = new Player();
-        player.init(Constants.STARTING_MONEY, Constants.STARTING_SPACE);
         preferences = new PreferencesAccess();
 
         defaultSkin = new Skin(Gdx.files.internal("DefaultSkin/uiskin.json"));
         generator = new FreeTypeFontGenerator(Gdx.files.internal("SulphurPoint-Bold.otf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = (int)HelperFunctions.resizeText(screenWidth, 50f, 1080);
+        parameter.size = Constants.DEFAULT_GAME_TEXT_SIZE; //(int)HelperFunctions.resizeText(screenWidth, 50f, 1080);
         font = generator.generateFont(parameter);
         generator.dispose();
         fontStyle = new Label.LabelStyle(font, Color.BLACK);
+
+        player = new Player();
+        player.init(Constants.STARTING_MONEY, Constants.STARTING_SPACE, fontStyle);
 
         textTable = new Table();
         clickableTable = new Table();
@@ -168,5 +159,17 @@ public class GameScreen extends ScreenManager
         quantityGroup = new VerticalGroup();
         priceGroup = new VerticalGroup();
         clickableGroup = new VerticalGroup();
+
+        clickableGroup.setDebug(true);
+        debug();
+    }
+    private void debug()
+    {
+        quantityGroup.setDebug(debug);
+        itemGroup.setDebug(debug);
+        priceGroup.setDebug(debug);
+        table.setDebug(debug);
+        clickableTable.setDebug(debug);
+        textTable.setDebug(debug);
     }
 }

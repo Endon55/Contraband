@@ -16,8 +16,26 @@ public class GameItems
     private int purchasePrice;
     private int numberOwned;
     private int basePrice;
+    private Label itemNameLabel;
+    private Label numberOwnedLabel;
+    private Label basePricelabel;
+    private Label.LabelStyle fontStyle;
 
-    public GameItems()  {}
+    public GameItems() { }
+
+    public void init(String itemName, int numberOwned, int basePrice, Label.LabelStyle fontStyle)
+    {
+        this.fontStyle = fontStyle;
+        this.itemName = itemName;
+        this.numberOwned = numberOwned;
+        this.basePrice = basePrice;
+        itemNameLabel = new Label("", fontStyle);
+        numberOwnedLabel = new Label("", fontStyle);
+        basePricelabel = new Label("", fontStyle);
+        update();
+    }
+
+
 
     public String getItemName()
     {
@@ -51,4 +69,37 @@ public class GameItems
     {
         this.basePrice = basePrice;
     }
+
+    public Label getItemNameLabel()
+    {
+        return itemNameLabel;
+    }
+    public Label getNumberOwnedLabel()
+    {
+        return numberOwnedLabel;
+    }
+    public Label getBasePricelabel()
+    {
+        return basePricelabel;
+    }
+    public void setItemNameLabel(Label itemNameLabel)
+    {
+        this.itemNameLabel = itemNameLabel;
+    }
+    public void setNumberOwnedLabel(Label numberOwnedLabel)
+    {
+        this.numberOwnedLabel = numberOwnedLabel;
+    }
+    public void setBasePricelabel(Label basePricelabel)
+    {
+        this.basePricelabel = basePricelabel;
+    }
+
+    public void update()
+    {
+        itemNameLabel   .setText(itemName);
+        numberOwnedLabel.setText(Integer.toString(numberOwned));
+        basePricelabel  .setText("$" + HelperFunctions.getPrettyIntString(basePrice));
+    }
+
 }

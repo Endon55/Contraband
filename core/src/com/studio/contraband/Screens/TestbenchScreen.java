@@ -38,7 +38,7 @@ public class TestbenchScreen extends ScreenManager
         Gdx.input.setInputProcessor(stage);
         generator = new FreeTypeFontGenerator(Gdx.files.internal("SulphurPoint-Bold.OTF"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = (int) HelperFunctions.resizeText(Gdx.graphics.getWidth(), 50f, 1080);
+        parameter.size = 50; //(int) HelperFunctions.resizeText(Gdx.graphics.getWidth(), 50f, 1080);
         font = generator.generateFont(parameter);
         generator.dispose();
 
@@ -85,20 +85,20 @@ public class TestbenchScreen extends ScreenManager
 
         pref = Gdx.app.getPreferences("Preferences");
         Json json = new Json();
-        GameItems go = new GameItems();
+        //GameItems go = new GameItems();
         //go.itemName = "cocaine";
         //go.basePrice = 100f;
         //go.currentBuyablePrice = 100f;
         //go.itemQuantitiy = 10;
         //go.purchasePrice = 50f;
         json.addClassTag("GameObjects", GameItems.class);
-        String objectString = json.toJson(go, GameItems.class);
+        //String objectString = json.toJson(go, GameItems.class);
         //System.out.println(json.toJson(go));
-        System.out.println(json.prettyPrint(objectString));
+        //System.out.println(json.prettyPrint(objectString));
 
 
 
-        GameItems go2 = json.fromJson(GameItems.class, objectString);
+        //GameItems go2 = json.fromJson(GameItems.class, objectString);
         //System.out.println(gottenString);
         //GameObjects go = json.fromJson(GameObjects.class, gottenString);
         //System.out.println(go.purchasePrice);

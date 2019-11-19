@@ -1,5 +1,7 @@
 package com.studio.contraband;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,11 +12,11 @@ public class Player
     private float money;
     private int maxSpace;
     private int usedSpace;
-
-
     private int numberOfItems;
-
     private ArrayList<GameItems> gameItems;
+
+
+    private Label.LabelStyle fontStyle;
 
     /**
      Init() must be called before using anything in the class
@@ -35,32 +37,35 @@ public class Player
     }
     
     
-    public void init(float startingMoney, int startingMaxSpace)
+    public void init(float startingMoney, int startingMaxSpace, Label.LabelStyle fontStyle)
     {
+        this.fontStyle = fontStyle;
         money = startingMoney;
         maxSpace = startingMaxSpace;
         usedSpace = 0;
         getFreshItemList();
     }
 
-    public void buy(int index, int quantity, float price)
+    public void buy(int index, int numberBought, float buyPrice)
     {
         int currentQuantity = gameItems.get(index).getNumberOwned();
-        setMoney(getMoney() - quantity * price);
-        gameItems.get(index).setNumberOwned(currentQuantity + quantity);
+        money = money - (numberBought * buyPrice);
+        gameItems.get(index).setNumberOwned(currentQuantity + numberBought);
+        gameItems.get(index).update();
     }
 
-    public void sell(int index, int quantity, float price)
+    public void sell(int index, int numberSold, float sellPrice)
     {
         int currentQuantity = gameItems.get(index).getNumberOwned();
-        setMoney(getMoney() + quantity * price);
-        gameItems.get(index).setNumberOwned(currentQuantity - quantity);
+        money = money + (numberSold * sellPrice);
+        gameItems.get(index).setNumberOwned(currentQuantity - numberSold);
+        gameItems.get(index).update();
     }
-
 
     private GameItems buildItemObject(String name, int numberPurchased, int purchasePrice, int basePrice)
     {
         GameItems item = new GameItems();
+        item.init(name, numberPurchased, basePrice, fontStyle);
         item.setItemName(name);
         item.setNumberOwned(numberPurchased);
         item.setPurchasePrice(purchasePrice);

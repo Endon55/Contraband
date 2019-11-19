@@ -1,6 +1,7 @@
 package com.studio.contraband;
 
 import com.badlogic.gdx.Game;
+import com.studio.contraband.Depricated.GameScreen2;
 import com.studio.contraband.Screens.*;
 
 public class Contraband extends Game
@@ -14,6 +15,7 @@ public class Contraband extends Game
 	private PauseScreen pauseScreen;
 	private SplashScreen splashScreen;
 	private TestbenchScreen testbenchScreen;
+	private GameScreen2 gameScreen2;
 
 
 
@@ -23,6 +25,7 @@ public class Contraband extends Game
 
 		mainMenuScreen = new MainMenuScreen(this);
 		gameScreen = new GameScreen(this);
+		gameScreen2 = new GameScreen2(this);
 		settingsScreen = new SettingsScreen(this);
 		pauseScreen = new PauseScreen();
 		splashScreen = new SplashScreen();
@@ -46,6 +49,11 @@ public class Contraband extends Game
 	public GameScreen getGameScreen()
 	{
 		return gameScreen;
+	}
+
+	public GameScreen2 getGameScreen2()
+	{
+		return gameScreen2;
 	}
 	public SettingsScreen getSettingsScreen()
 	{

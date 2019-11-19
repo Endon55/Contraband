@@ -1,4 +1,4 @@
-package com.studio.contraband;
+package com.studio.contraband.Depricated;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 

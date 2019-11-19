@@ -21,7 +21,7 @@ public class HelperFunctions
         return prettyString;
     }
 
-    public static float resizeText(float newWidth, float defaultSize, float defaultWidth)
+    public static float resizeText(float newWidth, float defaultSize, float defaultWidth, boolean bool)
     {
         //Takes the new Width and scales the new font using the default size of screen width and fault
         float a = newWidth * defaultSize;
