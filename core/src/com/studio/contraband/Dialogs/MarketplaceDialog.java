@@ -1,4 +1,4 @@
-package com.studio.contraband;
+package com.studio.contraband.Dialogs;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.studio.contraband.Player;
 import com.studio.contraband.Utils.Enums;
 import com.studio.contraband.Utils.HelperFunctions;
 
@@ -17,6 +18,7 @@ public class MarketplaceDialog extends Dialog
     String sellText;
 
     private BitmapFont font;
+    private Label.LabelStyle fontStyle;
     private TextButton buyButton;
     private TextButton sellButton;
     private Table table;
@@ -29,17 +31,19 @@ public class MarketplaceDialog extends Dialog
     private int index;
     private Enums.DialogStates state;
 
-    private float currentPrice;
+
+    private int currentPrice;
 
 
-    public MarketplaceDialog(String title, Skin skin, BitmapFont font, Player player, int index)
+    public MarketplaceDialog(String title, Skin skin, BitmapFont font, Label.LabelStyle fontStyle, Player player, int index)
     {
         super(title, skin);
         this.player = player;
         this.font = font;
+        this.fontStyle = fontStyle;
         this.index = index;
         setup();
-        currentPrice = 100f;
+        currentPrice = player.getGameItems().get(index).getBasePrice();
     }
 
 
@@ -54,7 +58,7 @@ public class MarketplaceDialog extends Dialog
         if(state == Enums.DialogStates.buy)
         {
             currentSliderValue = maxBuy;
-            sliderLabel = new Label(Integer.toString(currentSliderValue), getSkin());
+            sliderLabel = new Label(Integer.toString(currentSliderValue), fontStyle);
             slider = new Slider(0f, maxBuy, 1, false, getSkin());
             slider.setValue(currentSliderValue);
             sliderButton = HelperFunctions.createCustomButton(buyText, font, "ButtonUp3.png", "ButtonDown3.png");
@@ -84,7 +88,7 @@ public class MarketplaceDialog extends Dialog
         else if(state == Enums.DialogStates.sell)
         {
             currentSliderValue = maxSell;
-            sliderLabel = new Label(Integer.toString(currentSliderValue), getSkin());
+            sliderLabel = new Label(Integer.toString(currentSliderValue), fontStyle);
             slider = new Slider(0f, maxSell, 1, false, getSkin());
             slider.setValue(currentSliderValue);
             sliderButton = HelperFunctions.createCustomButton(sellText, font, "ButtonUp3.png", "ButtonDown3.png");

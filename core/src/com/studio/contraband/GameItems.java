@@ -20,15 +20,17 @@ public class GameItems
     private Label numberOwnedLabel;
     private Label basePricelabel;
     private Label.LabelStyle fontStyle;
+    private boolean isWeapon;
 
     public GameItems() { }
 
-    public void init(String itemName, int numberOwned, int basePrice, Label.LabelStyle fontStyle)
+    public void init(String itemName, boolean isWeapon, int numberOwned, int basePrice, Label.LabelStyle fontStyle)
     {
         this.fontStyle = fontStyle;
         this.itemName = itemName;
         this.numberOwned = numberOwned;
         this.basePrice = basePrice;
+        this.isWeapon = isWeapon;
         itemNameLabel = new Label("", fontStyle);
         numberOwnedLabel = new Label("", fontStyle);
         basePricelabel = new Label("", fontStyle);

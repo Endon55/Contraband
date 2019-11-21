@@ -1,22 +1,24 @@
 package com.studio.contraband;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.studio.contraband.Utils.Constants;
+import com.studio.contraband.Utils.HelperFunctions;
+import com.studio.contraband.Utils.RawItemStruct;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class Player
 {
-
-    private float money;
+    private int money;
     private int maxSpace;
     private int usedSpace;
     private int numberOfItems;
     private ArrayList<GameItems> gameItems;
 
-
     private Label.LabelStyle fontStyle;
+    private Label moneyLabel;
+    private Label maxSpaceLabel;
+    private Label usedSpaceLabel;
 
     /**
      Init() must be called before using anything in the class
@@ -36,36 +38,50 @@ public class Player
         usedSpace = temp;
     }
     
-    
-    public void init(float startingMoney, int startingMaxSpace, Label.LabelStyle fontStyle)
+    private void updatePlayer()
     {
-        this.fontStyle = fontStyle;
-        money = startingMoney;
-        maxSpace = startingMaxSpace;
-        usedSpace = 0;
-        getFreshItemList();
+        moneyLabel.setText("$" + HelperFunctions.getPrettyIntString(money));
+        usedSpaceLabel.setText(Integer.toString(usedSpace));
+        maxSpaceLabel.setText("/" + Integer.toString(maxSpace));
     }
 
-    public void buy(int index, int numberBought, float buyPrice)
+
+    public void buy(int index, int numberBought, int buyPrice)
     {
         int currentQuantity = gameItems.get(index).getNumberOwned();
         money = money - (numberBought * buyPrice);
         gameItems.get(index).setNumberOwned(currentQuantity + numberBought);
         gameItems.get(index).update();
+        usedSpace += numberBought;
+        updatePlayer();
     }
 
-    public void sell(int index, int numberSold, float sellPrice)
+    public void sell(int index, int numberSold, int sellPrice)
     {
         int currentQuantity = gameItems.get(index).getNumberOwned();
         money = money + (numberSold * sellPrice);
         gameItems.get(index).setNumberOwned(currentQuantity - numberSold);
         gameItems.get(index).update();
+        usedSpace -= numberSold;
+        updatePlayer();
     }
 
-    private GameItems buildItemObject(String name, int numberPurchased, int purchasePrice, int basePrice)
+    public void init(int startingMoney, int startingMaxSpace, Label.LabelStyle fontStyle)
+    {
+        this.fontStyle = fontStyle;
+
+        money = startingMoney;
+        maxSpace = startingMaxSpace;
+        usedSpace = 0;
+        moneyLabel = new Label("$" + HelperFunctions.getPrettyIntString(money), fontStyle);
+        maxSpaceLabel = new Label("/" + Integer.toString(maxSpace), fontStyle);
+        usedSpaceLabel =  new Label(Integer.toString(usedSpace), fontStyle);
+        getFreshItemList();
+    }
+    private GameItems buildItemObject(String name, boolean isWeapon, int numberPurchased, int purchasePrice, int basePrice)
     {
         GameItems item = new GameItems();
-        item.init(name, numberPurchased, basePrice, fontStyle);
+        item.init(name, isWeapon, numberPurchased, basePrice, fontStyle);
         item.setItemName(name);
         item.setNumberOwned(numberPurchased);
         item.setPurchasePrice(purchasePrice);
@@ -78,25 +94,13 @@ public class Player
         //Assembles the Array that hold all the different Buy/Sell Items
         gameItems = new ArrayList<GameItems>();
         //Drugs
-        gameItems.add(buildItemObject("Cocaine", 0, 0, 850));
-        gameItems.add(buildItemObject("Heroin", 0, 0, 350));
-        gameItems.add(buildItemObject("Weed", 0, 0, 75));
-        gameItems.add(buildItemObject("Speed", 0, 0, 125));
-        gameItems.add(buildItemObject("Mushrooms", 0, 0, 200));
-        gameItems.add(buildItemObject("Peyote", 0, 0, 150));
-        gameItems.add(buildItemObject("Meth", 0, 0, 550));
-        gameItems.add(buildItemObject("MDMA", 0, 0, 300));
-        gameItems.add(buildItemObject("Moonshine", 0, 0, 95));
-        //Weapons
-        gameItems.add(buildItemObject("Assault Rifle", 0, 0, 1500));
-        gameItems.add(buildItemObject("Plastic Explosive", 0, 0, 450));
-        gameItems.add(buildItemObject("Handgun", 0, 0, 750));
-        gameItems.add(buildItemObject("Anti-Air", 0, 0, 2000000));//2 Million
-        gameItems.add(buildItemObject("F18", 0, 0, 55000000));//55 Million
-        gameItems.add(buildItemObject("M1-Abrams", 0, 0, 6200000));//6.2 Million
-        gameItems.add(buildItemObject("Apache Helicopter", 0, 0, 61000000)); //61 Million
 
+        for (RawItemStruct item : Constants.ITEM_LIST)
+        {
+            gameItems.add(buildItemObject(item.Name, item.Weapon, 0, 0, item.BasePrice));
+        }
         //Alphabetizes the list
+/*
         Collections.sort(gameItems, new Comparator<GameItems>()
         {
             @Override
@@ -106,15 +110,16 @@ public class Player
             }
         });
 
+*/
         calculateUsedSpace();
         numberOfItems = gameItems.size();
-    }
 
+    }
     public float getMoney()
     {
         return money;
     }
-    public void setMoney(float money)
+    public void setMoney(int money)
     {
         this.money = money;
     }
@@ -146,4 +151,29 @@ public class Player
     {
         return gameItems;
     }
+    public Label getMoneyLabel()
+    {
+        return moneyLabel;
+    }
+    public void setMoneyLabel(Label moneyLabel)
+    {
+        this.moneyLabel = moneyLabel;
+    }
+    public Label getMaxSpaceLabel()
+    {
+        return maxSpaceLabel;
+    }
+    public void setMaxSpaceLabel(Label maxSpaceLabel)
+    {
+        this.maxSpaceLabel = maxSpaceLabel;
+    }
+    public Label getUsedSpaceLabel()
+    {
+        return usedSpaceLabel;
+    }
+    public void setUsedSpaceLabel(Label usedSpaceLabel)
+    {
+        this.usedSpaceLabel = usedSpaceLabel;
+    }
+
 }

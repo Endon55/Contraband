@@ -7,8 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.studio.contraband.*;
-import com.studio.contraband.GameScreenLabels;
-import com.studio.contraband.Utils.Constants;
+import com.studio.contraband.Dialogs.MarketplaceDialog;
 import com.studio.contraband.Utils.PreferencesAccess;
 
 
@@ -32,7 +31,7 @@ public class GameScreen2 extends ScreenManager
 
     PreferencesAccess preferences;
     Player player;
-    com.studio.contraband.GameScreenLabels screenLabels;
+    GameScreenLabels screenLabels;
 
 
     Skin defaultSkin;
