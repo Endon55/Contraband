@@ -100,7 +100,7 @@ public class GameScreen extends ScreenManager
             {
                 //TODO Listener Functionality
                 System.out.println("Clicked: " + player.getGameItems().get(itemIndex).getItemName());
-                marketDialog = new MarketplaceDialog("", defaultSkin, font, fontStyle, player, itemIndex);
+                marketDialog = new MarketplaceDialog("", defaultSkin, font, fontStyle, player, itemIndex, cityManager.getCurrentCity().getPrice(itemIndex));
                 marketDialog.show(stage);
             }
         };
@@ -195,7 +195,7 @@ public class GameScreen extends ScreenManager
                 changeCityDialog.show(stage);
             }
         });
-        debug();
+        if(debug) debug();
     }
     private void debug()
     {
@@ -206,6 +206,6 @@ public class GameScreen extends ScreenManager
         //clickableTable.setDebug(debug);
         bottom.debug();
         top.debug();
-        textTable.setDebug(debug);
+        textTable.debug();
     }
 }

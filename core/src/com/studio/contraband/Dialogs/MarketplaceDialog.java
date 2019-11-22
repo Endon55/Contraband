@@ -35,7 +35,7 @@ public class MarketplaceDialog extends Dialog
     private int currentPrice;
 
 
-    public MarketplaceDialog(String title, Skin skin, BitmapFont font, Label.LabelStyle fontStyle, Player player, int index)
+    public MarketplaceDialog(String title, Skin skin, BitmapFont font, Label.LabelStyle fontStyle, Player player, int index, int currentPrice)
     {
         super(title, skin);
         this.player = player;
@@ -43,7 +43,7 @@ public class MarketplaceDialog extends Dialog
         this.fontStyle = fontStyle;
         this.index = index;
         setup();
-        currentPrice = player.getGameItems().get(index).getBasePrice();
+        this.currentPrice = currentPrice;
     }
 
 

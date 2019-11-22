@@ -6,6 +6,7 @@ import com.studio.contraband.Utils.HelperFunctions;
 import com.studio.contraband.Utils.RawItemStruct;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class CityManager
 {
@@ -24,16 +25,17 @@ public class CityManager
 
     private ArrayList<Label> priceLabels;
     private Label.LabelStyle fontStyle;
-    private int currentCityIndex;
+
+    Random rand;
 
 
     public CityManager() { }
 
     public void init( Label.LabelStyle fontStyle)
     {
+        rand = new Random();
         this.fontStyle = fontStyle;
         getStartingPrices();
-        currentCityIndex = 0;
         buildCitiesList();
         currentCity = tokyo;
         currentCityLabel = new Label(currentCity.getName(), fontStyle);
@@ -41,12 +43,12 @@ public class CityManager
     }
     private void buildCitiesList()
     {
-        tokyo    = new Cities("Tokyo",startingPrices);
-        istanbul = new Cities("Istanbul",startingPrices);
-        shanghai = new Cities("Shanghai",startingPrices);
-        paris    = new Cities("Paris",startingPrices);
-        newYork  = new Cities("New York",startingPrices);
-        mumbai   = new Cities("Mumbai",startingPrices);
+        tokyo    = new Cities("Tokyo",startingPrices, rand);
+        istanbul = new Cities("Istanbul",startingPrices, rand);
+        shanghai = new Cities("Shanghai",startingPrices, rand);
+        paris    = new Cities("Paris",startingPrices, rand);
+        newYork  = new Cities("New York",startingPrices, rand);
+        mumbai   = new Cities("Mumbai",startingPrices, rand);
     }
 
     private void buildPriceLabels()
@@ -60,9 +62,14 @@ public class CityManager
 
     public void changeCity(Cities newCity)
     {
-        currentCity = newCity;
-        currentCityLabel.setText(currentCity.getName());
-        updatePriceLabels();
+        if(newCity != currentCity)
+        {
+            currentCity = newCity;
+            currentCityLabel.setText(currentCity.getName());
+            currentCity.updatePrices();
+            updatePriceLabels();
+        }
+
     }
 
     private void getStartingPrices()

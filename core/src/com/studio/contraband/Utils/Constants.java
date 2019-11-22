@@ -47,6 +47,14 @@ public class Constants
     ));
 
 
+    public static final int LOWER_BOUND_AVG_VALUE = 1;
+    public static final int UPPER_BOUND_AVG_VALUE = 16;
+    public static final int LOW_VALUE = 17;
+    public static final int HIGH_VALUE = 19;
+    public static final int[] WEIGHT_PERCENTS = {
+          //20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300
+            1,  1,  2,  3,  3,  7,  8 , 9,  10,   9,   8,   7,   6,   5,   3,   3,   3,   3,   3,   2,   2,   2,   2,   1,   1,   1,   1,   1,   1
+    };
 
 
 }
